@@ -1,46 +1,25 @@
-import React, { Component } from 'react'
+import React, { PureComponent } from 'react'
 import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import * as PostsActions from './../actions/PostActions'
 import {
   Header,
   Container,
 } from 'semantic-ui-react'
+import * as PostsActions from './../actions/PostActions'
+import { getPosts } from './../selectors'
 import PostList from './../components/PostList'
 
-const Posts = [
-  {
-      "id": "8xf0y6ziyjabvozdd253nd",
-      "timestamp": 1467166872634,
-      "title": "Udacity is the best place to learn React",
-      "body": "Everyone says so after all.",
-      "author": "thingtwo",
-      "category": "react",
-      "voteScore": 6,
-      "deleted": false,
-      "commentCount": 2
-  },
-  {
-      "id": "6ni6ok3ym7mf1p33lnez",
-      "timestamp": 1468479767190,
-      "title": "Learn Redux in 10 minutes!",
-      "body": "Just kidding. It takes more than 10 minutes to learn technology.",
-      "author": "thingone",
-      "category": "redux",
-      "voteScore": -5,
-      "deleted": false,
-      "commentCount": 0
-  }
-]
-
-export class Home extends Component {
-
+export class Home extends PureComponent {
   componentDidMount() {
     const { actions } = this.props
 
     actions.fetchPosts()
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('componentWillReceiveProps', nextProps)
   }
 
   render() {
@@ -53,9 +32,15 @@ export class Home extends Component {
           Detalhes
         </Link>
 
-        <PostList data={Posts} />
+        <PostList data={this.props.posts} />
       </Container>
     )
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    posts: getPosts(state),
   }
 }
 
@@ -65,4 +50,9 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export default connect(undefined, mapDispatchToProps)(Home)
+Home.propTypes = {
+  actions: PropTypes.object,
+  posts: PropTypes.array,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

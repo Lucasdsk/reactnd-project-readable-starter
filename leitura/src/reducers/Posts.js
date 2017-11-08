@@ -1,7 +1,8 @@
 import { actionTypes } from './../actions/PostActions'
 
 const prevState = {
-  posts: [],
+  byId: {},
+  allIds: {},
 }
 
 export default function (state = prevState, action) {
@@ -9,9 +10,13 @@ export default function (state = prevState, action) {
     case actionTypes.FETCH_POSTS:
       return {
         ...state,
-        posts: [
-          ...action.payload,
-        ],
+        byId: action.payload.reduce((prev, curr) => ({
+          ...prev,
+          [curr.id]: {
+            ...curr,
+          },
+        }), {}),
+        allIds: action.payload.map(post => post.id),
       }
 
     default:
