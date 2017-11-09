@@ -1,4 +1,5 @@
 import { actionTypes } from './../actions/PostActions'
+import { actionTypes as categoriesActionTypes } from './../actions/CategoriesActions'
 
 const prevState = {
   byId: {},
@@ -6,17 +7,23 @@ const prevState = {
 }
 
 export default function (state = prevState, action) {
-  switch (action.type) {
+  const {
+    type,
+    payload,
+  } = action
+
+  switch (type) {
     case actionTypes.FETCH_POSTS:
+    case categoriesActionTypes.FETCH_POSTS:
       return {
         ...state,
-        byId: action.payload.reduce((prev, curr) => ({
+        byId: payload.reduce((prev, curr) => ({
           ...prev,
           [curr.id]: {
             ...curr,
           },
         }), {}),
-        allIds: action.payload.map(post => post.id),
+        allIds: payload.map(post => post.id),
       }
 
     default:

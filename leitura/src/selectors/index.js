@@ -1,9 +1,12 @@
 import { createSelector } from 'reselect'
 
-const getPostsById = state => state.posts.byId
+const getPostsById = state => state.byId
 
 // eslint-disable-next-line
-export const getPosts = createSelector(
+export const getPostsSelector = createSelector(
   [getPostsById],
-  posts => Object.keys(posts).map(postId => posts[postId]),
+  (posts) => {
+    console.log('getPostsSelector')
+    return Object.keys(posts).map(postId => posts[postId])
+  },
 )
