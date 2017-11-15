@@ -1,12 +1,29 @@
 import { createSelector } from 'reselect'
+import { FILTER_POSTS } from './../utils'
+
+const listFiltered = list => (filter) => {
+  switch (filter) {
+    case FILTER_POSTS.VOTE_SCORE_UP:
+      return list.sort((x, y) => y.voteScore - x.voteScore)
+    case FILTER_POSTS.VOTE_SCORE_DOWN:
+      return list.sort((x, y) => x.voteScore - y.voteScore)
+    case FILTER_POSTS.COMMENTS:
+      return list.sort((x, y) => y.commentCount - x.commentCount)
+    default:
+      return list
+  }
+}
 
 const getPostsById = state => state.byId
+const getFilterSelected = state => state.filterSelected
 
 // eslint-disable-next-line
 export const getPostsSelector = createSelector(
-  [getPostsById],
-  (posts) => {
+  [getFilterSelected, getPostsById],
+  (filter, posts) => {
+    const newPosts = Object.keys(posts).map(postId => posts[postId])
+    const newList = listFiltered(newPosts)
     console.log('getPostsSelector')
-    return Object.keys(posts).map(postId => posts[postId])
+    return newList(filter)
   },
 )

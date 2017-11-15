@@ -27,10 +27,10 @@ const Post = ({ data, history }) => (
       </Card.Description>
     </Card.Content>
     <Card.Content extra>
-      <Button label={2} icon="like outline" labelPosition="right" />
+      <Button label={data.voteScore} icon="like outline" labelPosition="right" />
       <Button label={3} icon="dislike outline" labelPosition="right" />
       <Label>
-        <Icon name="comments" /> 2
+        <Icon name="comments" /> {data.commentCount}
       </Label>
     </Card.Content>
   </Card>

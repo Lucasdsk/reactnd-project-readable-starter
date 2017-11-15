@@ -16,6 +16,7 @@ export const actionTypes = {
   NEW_POST: 'posts/NEW',
   EDIT_POST: 'posts/EDIT',
   DELETE_POST: 'posts/DELETE',
+  FILTER: 'posts/FILTER',
 }
 
 export const fetchPosts = () => (dispatch) => {
@@ -24,5 +25,12 @@ export const fetchPosts = () => (dispatch) => {
       type: actionTypes.FETCH_POSTS,
       payload: response.data,
     })
+  })
+}
+
+export const filterPosts = filter => (dispatch) => {
+  dispatch({
+    type: actionTypes.FILTER,
+    payload: filter,
   })
 }

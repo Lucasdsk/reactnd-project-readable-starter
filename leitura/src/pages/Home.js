@@ -9,13 +9,15 @@ import {
   Segment,
   List,
   Grid,
+  Dropdown,
 } from 'semantic-ui-react'
 import * as PostsActions from './../actions/PostActions'
 import * as CategoriesActions from './../actions/CategoriesActions'
 import { getPostsSelector } from './../selectors'
 import PostList from './../components/PostList'
+import NoData from './../components/NoData'
 
-export class Home extends PureComponent {
+class Home extends PureComponent {
   componentDidMount() {
     const { actions } = this.props
 
@@ -24,10 +26,19 @@ export class Home extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('componentWillReceiveProps', nextProps)
+    if (nextProps.selectedCategory !== this.props.selectedCategory) {
+      this.props.actions.fetchPostsByCategory(nextProps.selectedCategory)
+    }
   }
 
   render() {
+    const {
+      posts,
+      categories,
+      actions,
+      selectedCategory,
+      postFilter,
+    } = this.props
     return (
       <Container>
         <Header as="h1">
@@ -36,20 +47,29 @@ export class Home extends PureComponent {
         <Grid>
           <Grid.Row>
             <Grid.Column width={12}>
-              <PostList data={this.props.posts} />
+              {
+                !!posts.length ?
+                  <PostList data={posts} />
+                  : <NoData message="Nenhum post encontrado." />
+              }
             </Grid.Column>
 
             <Grid.Column width={4}>
               <Segment>
-                <Link to="/react/123">
-                  Detalhes
-                </Link>
+                <Dropdown
+                  placeholder="Select a filter"
+                  fluid
+                  selection
+                  options={postFilter}
+                  onChange={(evt, data) => actions.filterPosts(data.value)}
+                />
                 <List divided selection>
                   {
-                    this.props.categories.map(category => (
+                    categories.map(category => (
                       <List.Item
                         key={category.path}
-                        onClick={() => this.props.actions.fetchPostsByCategory(category.path)}
+                        onClick={() => actions.selectCategory(category.path)}
+                        active={category.path === selectedCategory}
                       >
                         {category.name}
                       </List.Item>
@@ -69,6 +89,8 @@ function mapStateToProps({ posts, categories }) {
   return {
     posts: getPostsSelector(posts),
     categories: categories.list,
+    selectedCategory: categories.selectedCategory,
+    postFilter: posts.postFilter,
   }
 }
 
@@ -85,6 +107,8 @@ Home.propTypes = {
   actions: PropTypes.object,
   posts: PropTypes.array,
   categories: PropTypes.array.isRequired,
+  selectedCategory: PropTypes.string,
+  postFilter: PropTypes.array,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
