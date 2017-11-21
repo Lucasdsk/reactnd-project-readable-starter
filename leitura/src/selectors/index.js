@@ -9,6 +9,8 @@ const listFiltered = list => (filter) => {
       return list.sort((x, y) => x.voteScore - y.voteScore)
     case FILTER_POSTS.COMMENTS:
       return list.sort((x, y) => y.commentCount - x.commentCount)
+    case FILTER_POSTS.MORE_RECENT:
+      return list.sort((x, y) => y.timestamp - x.timestamp)
     default:
       return list
   }
@@ -23,7 +25,6 @@ export const getPostsSelector = createSelector(
   (filter, posts) => {
     const newPosts = Object.keys(posts).map(postId => posts[postId])
     const newList = listFiltered(newPosts)
-    console.log('getPostsSelector')
     return newList(filter)
   },
 )

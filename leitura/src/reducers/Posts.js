@@ -3,6 +3,7 @@ import { actionTypes } from './../actions/PostActions'
 import { actionTypes as categoriesActionTypes } from './../actions/CategoriesActions'
 
 const prevState = {
+  post: {},
   byId: {},
   allIds: {},
   filterSelected: '',
@@ -22,6 +23,10 @@ const prevState = {
     {
       text: 'More commented',
       value: FILTER_POSTS.COMMENTS,
+    },
+    {
+      text: 'More recent',
+      value: FILTER_POSTS.MORE_RECENT,
     },
   ],
 }
@@ -50,6 +55,11 @@ export default function (state = prevState, action) {
       return {
         ...state,
         filterSelected: payload,
+      }
+
+    case actionTypes.DETAIL:
+      return {
+        post: payload,
       }
 
     default:

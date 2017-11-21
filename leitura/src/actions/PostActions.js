@@ -17,15 +17,25 @@ export const actionTypes = {
   EDIT_POST: 'posts/EDIT',
   DELETE_POST: 'posts/DELETE',
   FILTER: 'posts/FILTER',
+  DETAIL: 'posts/DETAIL',
 }
 
-export const fetchPosts = () => (dispatch) => {
-  api.get('posts/').then((response) => {
-    dispatch({
-      type: actionTypes.FETCH_POSTS,
-      payload: response.data,
+export const fetchPosts = postId => (dispatch) => {
+  if (postId) {
+    api.get(`posts/${postId}`).then((response) => {
+      dispatch({
+        type: actionTypes.DETAIL,
+        payload: response.data,
+      })
     })
-  })
+  } else {
+    api.get('posts/').then((response) => {
+      dispatch({
+        type: actionTypes.FETCH_POSTS,
+        payload: response.data,
+      })
+    })
+  }
 }
 
 export const filterPosts = filter => (dispatch) => {
