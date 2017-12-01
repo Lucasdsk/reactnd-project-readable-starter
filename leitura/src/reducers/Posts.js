@@ -29,6 +29,7 @@ const prevState = {
       value: FILTER_POSTS.MORE_RECENT,
     },
   ],
+  loadingPosts: false,
 }
 
 export default function (state = prevState, action) {
@@ -38,6 +39,12 @@ export default function (state = prevState, action) {
   } = action
 
   switch (type) {
+    case actionTypes.FETCH_POSTS_START:
+      return {
+        ...state,
+        loadingPosts: true,
+      }
+
     case actionTypes.FETCH_POSTS:
     case categoriesActionTypes.FETCH_POSTS:
       return {
@@ -49,6 +56,7 @@ export default function (state = prevState, action) {
           },
         }), {}),
         allIds: payload.map(post => post.id),
+        loadingPosts: false,
       }
 
     case actionTypes.FILTER:
@@ -59,7 +67,9 @@ export default function (state = prevState, action) {
 
     case actionTypes.DETAIL:
       return {
+        ...state,
         post: payload,
+        loadingPosts: false,
       }
 
     default:

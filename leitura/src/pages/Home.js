@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import {
+  Dimmer,
+  Loader,
   Segment,
   List,
   Grid,
@@ -36,45 +38,53 @@ class Home extends PureComponent {
       actions,
       selectedCategory,
       postFilter,
+      loadingPosts,
     } = this.props
-    return (
-      <Grid>
-        <Grid.Row>
-          <Grid.Column width={12}>
-            {
-              !!posts.length ?
-                <PostList data={posts} />
-                : <NoData message="Nenhum post encontrado." />
-            }
-          </Grid.Column>
 
-          <Grid.Column width={4}>
-            <Button primary>New Post</Button>
-            <Segment>
-              <Dropdown
-                placeholder="Select a filter"
-                fluid
-                selection
-                options={postFilter}
-                onChange={(evt, data) => actions.filterPosts(data.value)}
-              />
-              <List divided selection>
-                {
-                  categories.map(category => (
-                    <List.Item
-                      key={category.path}
-                      onClick={() => actions.selectCategory(category.path)}
-                      active={category.path === selectedCategory}
-                    >
-                      {category.name}
-                    </List.Item>
-                  ))
-                }
-              </List>
-            </Segment>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+    return (
+      loadingPosts ? (
+        <Dimmer active inverted>
+          <Loader inverted>Loading</Loader>
+        </Dimmer>
+      ) : (
+        <Grid>
+          <Grid.Row>
+            <Grid.Column width={12}>
+              {
+                posts.length ?
+                  <PostList data={posts} />
+                  : <NoData message="Nenhum post encontrado." />
+              }
+            </Grid.Column>
+
+            <Grid.Column width={4}>
+              <Button primary>New Post</Button>
+              <Segment>
+                <Dropdown
+                  placeholder="Select a filter"
+                  fluid
+                  selection
+                  options={postFilter}
+                  onChange={(evt, data) => actions.filterPosts(data.value)}
+                />
+                <List divided selection>
+                  {
+                    categories.map(category => (
+                      <List.Item
+                        key={category.path}
+                        onClick={() => actions.selectCategory(category.path)}
+                        active={category.path === selectedCategory}
+                      >
+                        {category.name}
+                      </List.Item>
+                    ))
+                  }
+                </List>
+              </Segment>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      )
     )
   }
 }
@@ -85,6 +95,7 @@ function mapStateToProps({ posts, categories }) {
     categories: categories.list,
     selectedCategory: categories.selectedCategory,
     postFilter: posts.postFilter,
+    loadingPosts: posts.loadingPosts,
   }
 }
 
@@ -103,6 +114,7 @@ Home.propTypes = {
   categories: PropTypes.array.isRequired,
   selectedCategory: PropTypes.string,
   postFilter: PropTypes.array,
+  loadingPosts: PropTypes.bool,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home)

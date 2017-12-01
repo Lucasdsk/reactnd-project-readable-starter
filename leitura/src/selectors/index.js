@@ -18,6 +18,9 @@ const listFiltered = list => (filter) => {
 
 const getPostsById = state => state.byId
 const getFilterSelected = state => state.filterSelected
+const getCommentsByParentId = (state, postId) => {
+  return state.byParentId[postId] || state.byParentId
+}
 
 // eslint-disable-next-line
 export const getPostsSelector = createSelector(
@@ -26,5 +29,12 @@ export const getPostsSelector = createSelector(
     const newPosts = Object.keys(posts).map(postId => posts[postId])
     const newList = listFiltered(newPosts)
     return newList(filter)
+  },
+)
+
+export const getCommentsSelector = createSelector(
+  [getCommentsByParentId],
+  (comments) => {
+    return Object.keys(comments).map(commentId => comments[commentId])
   },
 )

@@ -10,6 +10,7 @@ remover post: posts/DELETE
 */
 
 export const actionTypes = {
+  FETCH_POSTS_START: 'posts/FETCH_START',
   FETCH_POSTS: 'posts/FETCH',
   LIKE: 'posts/LIKE',
   UNLIKE: 'posts/UNLIKE',
@@ -21,6 +22,8 @@ export const actionTypes = {
 }
 
 export const fetchPosts = postId => (dispatch) => {
+  dispatch({ type: actionTypes.FETCH_POSTS_START })
+
   if (postId) {
     api.get(`posts/${postId}`).then((response) => {
       dispatch({
