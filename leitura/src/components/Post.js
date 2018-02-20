@@ -1,20 +1,46 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import moment from 'moment'
-import { Card, Button, Label, Icon } from 'semantic-ui-react'
+import styled from "styled-components"
+import { Card, Button, Label, Icon, Modal, Header } from 'semantic-ui-react'
 import { withRouter } from 'react-router-dom'
 
-const Post = ({ data, history }) => (
-  <Card
+const RenderModal = () => (
+  <Modal trigger={<Icon name="trash" size="large" />} basic size="small">
+    <Header icon="archive" content="Archive Old Messages" />
+    <Modal.Content>
+      <p>Você tem certeza que deseja excluir este post?</p>
+    </Modal.Content>
+    <Modal.Actions>
+      <Button basic color="red" inverted>
+        <Icon name="remove" /> Não
+      </Button>
+      <Button color="green" inverted>
+        <Icon name="checkmark" /> Sim
+      </Button>
+    </Modal.Actions>
+  </Modal>
+)
+
+const Post = ({
+  data,
+  history,
+  onUpVote,
+  onDownVote
+}) => (
+  <StyledCard
     fluid
-    onClick={() => history.push(`/${data.category}/${data.id}`)}
   >
     <Card.Content>
       <Label attached="top left">{data.category}</Label>
       <Card.Header>
         {data.title}
+        <Label attached="top right" className="actions">
+          <Icon name="pencil square" size="large" />
+          {RenderModal()}
+        </Label>
       </Card.Header>
-      <Card.Content>
+      <Card.Content onClick={() => history.push(`/${data.category}/${data.id}`)}>
         <Card.Meta>
           {data.author}
         </Card.Meta>
@@ -27,17 +53,42 @@ const Post = ({ data, history }) => (
       </Card.Description>
     </Card.Content>
     <Card.Content extra>
-      <Button label={data.voteScore} icon="like outline" labelPosition="right" />
-      <Button label={3} icon="dislike outline" labelPosition="right" />
       <Label>
         <Icon name="comments" /> {data.commentCount}
       </Label>
+      <Button.Group className="buttonGroup" floated="right">
+        <Button onClick={() => onDownVote(data.id)} icon="dislike outline" color="red" />
+        <Button.Or text={data.voteScore} />
+        <Button onClick={() => onUpVote(data.id)} icon="like outline" color="green" />
+      </Button.Group>
     </Card.Content>
-  </Card>
+  </StyledCard>
 )
 
+const StyledCard = styled(Card)`
+  cursor: pointer;
+
+  .actions {
+    .icon.trash {
+      margin: 0;
+    }
+  }
+
+  .buttonGroup {
+    .button {
+      .icon {
+        &.like:hover {
+          color: #fff;
+        }
+      }
+    }
+  }
+`
+
 Post.propTypes = {
-  data: PropTypes.object,
+  data: PropTypes.object.isRequired,
+  onUpVote: PropTypes.func.isRequired,
+  onDownVote: PropTypes.func.isRequired,
 }
 
 export default withRouter(Post)

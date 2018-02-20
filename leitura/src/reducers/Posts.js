@@ -30,6 +30,7 @@ const prevState = {
     },
   ],
   loadingPosts: false,
+  deletePost: false,
 }
 
 export default function (state = prevState, action) {
@@ -70,6 +71,43 @@ export default function (state = prevState, action) {
         ...state,
         post: payload,
         loadingPosts: false,
+      }
+
+    case actionTypes.UP_VOTE:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [payload]: {
+            ...state.byId[payload],
+            voteScore: state.byId[payload].voteScore + 1,
+          },
+        },
+      }
+
+    case actionTypes.DOWN_VOTE:
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [payload]: {
+            ...state.byId[payload],
+            voteScore: state.byId[payload].voteScore - 1,
+          },
+        },
+      }
+
+    case actionTypes.DELETE_POST:
+      return {
+        ...state,
+        deletePost: true,
+      }
+
+    case actionTypes.DELETE_POST_SUCCESS:
+    case actionTypes.DELETE_POST_CANCEL:
+      return {
+        ...state,
+        deletePost: false,
       }
 
     default:

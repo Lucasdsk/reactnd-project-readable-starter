@@ -39,6 +39,7 @@ class Home extends PureComponent {
       selectedCategory,
       postFilter,
       loadingPosts,
+      deletePost,
     } = this.props
 
     return (
@@ -52,7 +53,15 @@ class Home extends PureComponent {
             <Grid.Column width={12}>
               {
                 posts.length ?
-                  <PostList data={posts} />
+                  <PostList
+                    data={posts}
+                    onUpVote={actions.upVotePost}
+                    onDownVote={actions.downVotePost}
+                    modalOpened={deletePost}
+                    onRemovePost={actions.fetchDeletePost}
+                    handleRemovePost={actions.deletePost}
+                    cancelRemovePost={actions.cancelDeletePost}
+                  />
                   : <NoData message="Nenhum post encontrado." />
               }
             </Grid.Column>
@@ -93,6 +102,7 @@ function mapStateToProps({ posts, categories }) {
   return {
     posts: getPostsSelector(posts),
     categories: categories.list,
+    deletePost: posts.deletePost,
     selectedCategory: categories.selectedCategory,
     postFilter: posts.postFilter,
     loadingPosts: posts.loadingPosts,
